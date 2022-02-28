@@ -138,7 +138,7 @@ Now, we can also perform circuit optimization on this, without affecting the end
     ```
     a. Replace `1001xx0xx` with any state, and 2 with any value for maximum steps
 
-    b. Change `LOGGING = True` in `models.py`, to see the log of the entire decision tree. The log outputs for example 1 and example 2 are in `output1.txt` and `output2.txt`, respectively.
+    b. Change `LOGGING = True` in `models.py`, to see the log of the entire decision tree. The log outputs for example 1, example 2 and example 3 are in `output1.txt`, `output2.txt`, and `output3.txt`, respectively.
 
 ### Next steps
 
