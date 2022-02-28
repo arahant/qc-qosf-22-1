@@ -124,7 +124,9 @@ Now, we can also perform circuit optimization on this, without affecting the end
 
 ### Current implementation
 
-1. I've primarily implemented the logic, but only the classical algorithm for setting a qubit to |1⟩
+1. I've primarily implemented the logic, both the classical version and the quantum version for setting a qubit to |1⟩
+
+    a. The log prints out the possible win states, their individual probability, and the quantum circuit to reach that state
 
 3. I've implemented the brute force algorithm, which generates the entire decision tree for a given state.
 
@@ -134,6 +136,7 @@ Now, we can also perform circuit optimization on this, without affecting the end
     ```
     git clone https://github.com/arahant/qc-qosf-22-1.git
     cd qc-qosf-22-1
+    pip install -r requirements.txt
     python main.py 1001xx0xx 2
     ```
     a. Replace `1001xx0xx` with any state, and 2 with any value for maximum steps
@@ -144,9 +147,9 @@ Now, we can also perform circuit optimization on this, without affecting the end
 
 1. One of the next steps would be to optimize the brute force method which gets _all possible_ next states, and replace it with an algorithm which only gets **most probabilistic** next steps.
 
-2. The quantum version, as I mentioned before, can be implemented using a CX gate or a Rx gate, depending on the state of the extra, borrowed qubit.
+2. The quantum operation, Rx gate, for when the state of the extra, borrowed qubit is in a mixed state
 
-3. Generate a circuit for the quantum version of the algorithm, and attempt quantum circuit optimization.
+3. Attempt quantum circuit optimization.
 
 ## Result
 
@@ -162,6 +165,52 @@ Given Inputs:
 Final Qubits 	Resultant Qubit    Probability   Steps   Player's moves
 |100111000⟩ 	 |....11.00⟩ 	   0.125 	 2 	 [(1, 4, 6, 5), (1, 4, 5, 6)]
 |100110001⟩ 	 |....10.01⟩ 	   0.125     	 2 	 [(1, 4, 9, 5), (1, 4, 5, 9)]
+
+Resultant Quantum Circuits for:  |100110001⟩
+      ┌─────────────────┐          
+q0_0: ┤ Initialize(0,1) ├──────────
+      ├─────────────────┤          
+q0_1: ┤ Initialize(1,0) ├──────────
+      ├─────────────────┤          
+q0_2: ┤ Initialize(1,0) ├──────────
+      ├─────────────────┤          
+q0_3: ┤ Initialize(0,1) ├──■───────
+      ├─────────────────┤┌─┴─┐     
+q0_4: ┤ Initialize(1,0) ├┤ X ├──■──
+      ├─────────────────┤└───┘  │  
+q0_5: ┤ Initialize(1,0) ├───────┼──
+      ├─────────────────┤       │  
+q0_6: ┤ Initialize(1,0) ├───────┼──
+      ├─────────────────┤       │  
+q0_7: ┤ Initialize(1,0) ├───────┼──
+      ├─────────────────┤     ┌─┴─┐
+q0_8: ┤ Initialize(1,0) ├─────┤ X ├
+      └─────────────────┘     └───┘
+c0: 9/═════════════════════════════
+
+
+Resultant Quantum Circuits for:  |100111000⟩
+      ┌─────────────────┐          
+q0_0: ┤ Initialize(0,1) ├──────────
+      ├─────────────────┤          
+q0_1: ┤ Initialize(1,0) ├──────────
+      ├─────────────────┤          
+q0_2: ┤ Initialize(1,0) ├──────────
+      ├─────────────────┤          
+q0_3: ┤ Initialize(0,1) ├──■───────
+      ├─────────────────┤  │  ┌───┐
+q0_4: ┤ Initialize(1,0) ├──┼──┤ X ├
+      ├─────────────────┤┌─┴─┐└─┬─┘
+q0_5: ┤ Initialize(1,0) ├┤ X ├──■──
+      ├─────────────────┤└───┘     
+q0_6: ┤ Initialize(1,0) ├──────────
+      ├─────────────────┤          
+q0_7: ┤ Initialize(1,0) ├──────────
+      ├─────────────────┤          
+q0_8: ┤ Initialize(1,0) ├──────────
+      └─────────────────┘          
+c0: 9/═════════════════════════════
+
 ```
 
 ### Example 2 (bonus question): 1001xxxxx
@@ -181,6 +230,166 @@ Final Qubits 	 Resultant Qubit   Probability   Steps   Player's moves
 |100110001⟩ 	 |....10001⟩ 	   0.125 	 2 	 [(1, 4, 5, 9), (1, 4, 9, 5)]
 |100100110⟩ 	 |....00110⟩ 	   0.125 	 2 	 [(1, 4, 8, 7)]
 |100110100⟩ 	 |....10100⟩ 	   0.125 	 2 	 [(1, 4, 5, 7)]
+
+Resultant Quantum Circuits for:  |100101100⟩
+      ┌─────────────────┐          
+q0_0: ┤ Initialize(0,1) ├──────────
+      ├─────────────────┤          
+q0_1: ┤ Initialize(1,0) ├──────────
+      ├─────────────────┤          
+q0_2: ┤ Initialize(1,0) ├──────────
+      ├─────────────────┤          
+q0_3: ┤ Initialize(0,1) ├──■───────
+      ├─────────────────┤  │       
+q0_4: ┤ Initialize(1,0) ├──┼───────
+      ├─────────────────┤┌─┴─┐     
+q0_5: ┤ Initialize(1,0) ├┤ X ├──■──
+      ├─────────────────┤└───┘┌─┴─┐
+q0_6: ┤ Initialize(1,0) ├─────┤ X ├
+      ├─────────────────┤     └───┘
+q0_7: ┤ Initialize(1,0) ├──────────
+      ├─────────────────┤          
+q0_8: ┤ Initialize(1,0) ├──────────
+      └─────────────────┘          
+c0: 9/═════════════════════════════
+
+
+Resultant Quantum Circuits for:  |100100100⟩
+      ┌─────────────────┐     
+q0_0: ┤ Initialize(0,1) ├─────
+      ├─────────────────┤     
+q0_1: ┤ Initialize(1,0) ├─────
+      ├─────────────────┤     
+q0_2: ┤ Initialize(1,0) ├─────
+      ├─────────────────┤     
+q0_3: ┤ Initialize(0,1) ├──■──
+      ├─────────────────┤  │  
+q0_4: ┤ Initialize(1,0) ├──┼──
+      ├─────────────────┤  │  
+q0_5: ┤ Initialize(1,0) ├──┼──
+      ├─────────────────┤┌─┴─┐
+q0_6: ┤ Initialize(1,0) ├┤ X ├
+      ├─────────────────┤└───┘
+q0_7: ┤ Initialize(1,0) ├─────
+      ├─────────────────┤     
+q0_8: ┤ Initialize(1,0) ├─────
+      └─────────────────┘     
+c0: 9/════════════════════════
+
+
+Resultant Quantum Circuits for:  |100100110⟩
+      ┌─────────────────┐          
+q0_0: ┤ Initialize(0,1) ├──────────
+      ├─────────────────┤          
+q0_1: ┤ Initialize(1,0) ├──────────
+      ├─────────────────┤          
+q0_2: ┤ Initialize(1,0) ├──────────
+      ├─────────────────┤          
+q0_3: ┤ Initialize(0,1) ├──■───────
+      ├─────────────────┤  │       
+q0_4: ┤ Initialize(1,0) ├──┼───────
+      ├─────────────────┤  │       
+q0_5: ┤ Initialize(1,0) ├──┼───────
+      ├─────────────────┤  │  ┌───┐
+q0_6: ┤ Initialize(1,0) ├──┼──┤ X ├
+      ├─────────────────┤┌─┴─┐└─┬─┘
+q0_7: ┤ Initialize(1,0) ├┤ X ├──■──
+      ├─────────────────┤└───┘     
+q0_8: ┤ Initialize(1,0) ├──────────
+      └─────────────────┘          
+c0: 9/═════════════════════════════
+
+
+Resultant Quantum Circuits for:  |100100101⟩
+      ┌─────────────────┐          
+q0_0: ┤ Initialize(0,1) ├──────────
+      ├─────────────────┤          
+q0_1: ┤ Initialize(1,0) ├──────────
+      ├─────────────────┤          
+q0_2: ┤ Initialize(1,0) ├──────────
+      ├─────────────────┤          
+q0_3: ┤ Initialize(0,1) ├──■───────
+      ├─────────────────┤  │       
+q0_4: ┤ Initialize(1,0) ├──┼───────
+      ├─────────────────┤  │       
+q0_5: ┤ Initialize(1,0) ├──┼───────
+      ├─────────────────┤  │  ┌───┐
+q0_6: ┤ Initialize(1,0) ├──┼──┤ X ├
+      ├─────────────────┤  │  └─┬─┘
+q0_7: ┤ Initialize(1,0) ├──┼────┼──
+      ├─────────────────┤┌─┴─┐  │  
+q0_8: ┤ Initialize(1,0) ├┤ X ├──■──
+      └─────────────────┘└───┘     
+c0: 9/═════════════════════════════
+
+
+Resultant Quantum Circuits for:  |100110001⟩
+      ┌─────────────────┐          
+q0_0: ┤ Initialize(0,1) ├──────────
+      ├─────────────────┤          
+q0_1: ┤ Initialize(1,0) ├──────────
+      ├─────────────────┤          
+q0_2: ┤ Initialize(1,0) ├──────────
+      ├─────────────────┤          
+q0_3: ┤ Initialize(0,1) ├──■───────
+      ├─────────────────┤  │  ┌───┐
+q0_4: ┤ Initialize(1,0) ├──┼──┤ X ├
+      ├─────────────────┤  │  └─┬─┘
+q0_5: ┤ Initialize(1,0) ├──┼────┼──
+      ├─────────────────┤  │    │  
+q0_6: ┤ Initialize(1,0) ├──┼────┼──
+      ├─────────────────┤  │    │  
+q0_7: ┤ Initialize(1,0) ├──┼────┼──
+      ├─────────────────┤┌─┴─┐  │  
+q0_8: ┤ Initialize(1,0) ├┤ X ├──■──
+      └─────────────────┘└───┘     
+c0: 9/═════════════════════════════
+
+
+Resultant Quantum Circuits for:  |100110100⟩
+      ┌─────────────────┐          
+q0_0: ┤ Initialize(0,1) ├──────────
+      ├─────────────────┤          
+q0_1: ┤ Initialize(1,0) ├──────────
+      ├─────────────────┤          
+q0_2: ┤ Initialize(1,0) ├──────────
+      ├─────────────────┤          
+q0_3: ┤ Initialize(0,1) ├──■───────
+      ├─────────────────┤┌─┴─┐     
+q0_4: ┤ Initialize(1,0) ├┤ X ├──■──
+      ├─────────────────┤└───┘  │  
+q0_5: ┤ Initialize(1,0) ├───────┼──
+      ├─────────────────┤     ┌─┴─┐
+q0_6: ┤ Initialize(1,0) ├─────┤ X ├
+      ├─────────────────┤     └───┘
+q0_7: ┤ Initialize(1,0) ├──────────
+      ├─────────────────┤          
+q0_8: ┤ Initialize(1,0) ├──────────
+      └─────────────────┘          
+c0: 9/═════════════════════════════
+
+
+Resultant Quantum Circuits for:  |100111000⟩
+      ┌─────────────────┐          
+q0_0: ┤ Initialize(0,1) ├──────────
+      ├─────────────────┤          
+q0_1: ┤ Initialize(1,0) ├──────────
+      ├─────────────────┤          
+q0_2: ┤ Initialize(1,0) ├──────────
+      ├─────────────────┤          
+q0_3: ┤ Initialize(0,1) ├──■───────
+      ├─────────────────┤  │  ┌───┐
+q0_4: ┤ Initialize(1,0) ├──┼──┤ X ├
+      ├─────────────────┤┌─┴─┐└─┬─┘
+q0_5: ┤ Initialize(1,0) ├┤ X ├──■──
+      ├─────────────────┤└───┘     
+q0_6: ┤ Initialize(1,0) ├──────────
+      ├─────────────────┤          
+q0_7: ┤ Initialize(1,0) ├──────────
+      ├─────────────────┤          
+q0_8: ┤ Initialize(1,0) ├──────────
+      └─────────────────┘          
+c0: 9/═════════════════════════════
 ```
 
 ### Example state 3: 10010xxxx
@@ -197,4 +406,95 @@ Final Qubits 	 Resultant Qubit   Probability   Steps   Player's moves
 |100100110⟩ 	 |.....0110⟩ 	   0.125 	 2 	 [(1, 4, 8, 7)]
 |100101100⟩ 	 |.....1100⟩ 	   0.125 	 2 	 [(1, 4, 6, 7)]
 |100100101⟩ 	 |.....0101⟩ 	   0.125 	 2 	 [(1, 4, 9, 7)]
+
+Resultant Quantum Circuits for:  |100100110⟩
+      ┌─────────────────┐          
+q0_0: ┤ Initialize(0,1) ├──────────
+      ├─────────────────┤          
+q0_1: ┤ Initialize(1,0) ├──────────
+      ├─────────────────┤          
+q0_2: ┤ Initialize(1,0) ├──────────
+      ├─────────────────┤          
+q0_3: ┤ Initialize(0,1) ├──■───────
+      ├─────────────────┤  │       
+q0_4: ┤ Initialize(1,0) ├──┼───────
+      ├─────────────────┤  │       
+q0_5: ┤ Initialize(1,0) ├──┼───────
+      ├─────────────────┤  │  ┌───┐
+q0_6: ┤ Initialize(1,0) ├──┼──┤ X ├
+      ├─────────────────┤┌─┴─┐└─┬─┘
+q0_7: ┤ Initialize(1,0) ├┤ X ├──■──
+      ├─────────────────┤└───┘     
+q0_8: ┤ Initialize(1,0) ├──────────
+      └─────────────────┘          
+c0: 9/═════════════════════════════
+
+
+Resultant Quantum Circuits for:  |100100101⟩
+      ┌─────────────────┐          
+q0_0: ┤ Initialize(0,1) ├──────────
+      ├─────────────────┤          
+q0_1: ┤ Initialize(1,0) ├──────────
+      ├─────────────────┤          
+q0_2: ┤ Initialize(1,0) ├──────────
+      ├─────────────────┤          
+q0_3: ┤ Initialize(0,1) ├──■───────
+      ├─────────────────┤  │       
+q0_4: ┤ Initialize(1,0) ├──┼───────
+      ├─────────────────┤  │       
+q0_5: ┤ Initialize(1,0) ├──┼───────
+      ├─────────────────┤  │  ┌───┐
+q0_6: ┤ Initialize(1,0) ├──┼──┤ X ├
+      ├─────────────────┤  │  └─┬─┘
+q0_7: ┤ Initialize(1,0) ├──┼────┼──
+      ├─────────────────┤┌─┴─┐  │  
+q0_8: ┤ Initialize(1,0) ├┤ X ├──■──
+      └─────────────────┘└───┘     
+c0: 9/═════════════════════════════
+
+
+Resultant Quantum Circuits for:  |100101100⟩
+      ┌─────────────────┐          
+q0_0: ┤ Initialize(0,1) ├──────────
+      ├─────────────────┤          
+q0_1: ┤ Initialize(1,0) ├──────────
+      ├─────────────────┤          
+q0_2: ┤ Initialize(1,0) ├──────────
+      ├─────────────────┤          
+q0_3: ┤ Initialize(0,1) ├──■───────
+      ├─────────────────┤  │       
+q0_4: ┤ Initialize(1,0) ├──┼───────
+      ├─────────────────┤┌─┴─┐     
+q0_5: ┤ Initialize(1,0) ├┤ X ├──■──
+      ├─────────────────┤└───┘┌─┴─┐
+q0_6: ┤ Initialize(1,0) ├─────┤ X ├
+      ├─────────────────┤     └───┘
+q0_7: ┤ Initialize(1,0) ├──────────
+      ├─────────────────┤          
+q0_8: ┤ Initialize(1,0) ├──────────
+      └─────────────────┘          
+c0: 9/═════════════════════════════
+
+
+Resultant Quantum Circuits for:  |100100100⟩
+      ┌─────────────────┐     
+q0_0: ┤ Initialize(0,1) ├─────
+      ├─────────────────┤     
+q0_1: ┤ Initialize(1,0) ├─────
+      ├─────────────────┤     
+q0_2: ┤ Initialize(1,0) ├─────
+      ├─────────────────┤     
+q0_3: ┤ Initialize(0,1) ├──■──
+      ├─────────────────┤  │  
+q0_4: ┤ Initialize(1,0) ├──┼──
+      ├─────────────────┤  │  
+q0_5: ┤ Initialize(1,0) ├──┼──
+      ├─────────────────┤┌─┴─┐
+q0_6: ┤ Initialize(1,0) ├┤ X ├
+      ├─────────────────┤└───┘
+q0_7: ┤ Initialize(1,0) ├─────
+      ├─────────────────┤     
+q0_8: ┤ Initialize(1,0) ├─────
+      └─────────────────┘     
+c0: 9/════════════════════════
 ```
