@@ -1,12 +1,12 @@
 import copy
 import random
 from collections import defaultdict
-from models import LOGGING, Board, Quantum
+from models import LOGGING, Board, Quantum, Result
 
 best_wins = defaultdict(set)
 win_moves = defaultdict(set)
 win_circuits = dict()
-
+result = Result(best_wins, win_moves, win_circuits)
 
 def get_qubit(state, bot, size):
     qubit = ''
@@ -76,9 +76,9 @@ def evaluate_penultimate_state(quantum, board, probability, moves, steps, operat
     for win_pos in win_states():
         if set(win_pos).issubset(board.state):
             if steps <= board.max:
-                best_wins[probability].add(tuple([steps, tuple(board.state)]))
-                win_moves[tuple(board.state)].add(tuple(moves))
-                win_circuits[tuple(board.state)] = construct_quantum_circuit(quantum, operations)
+                result.best_wins[probability].add(tuple([steps, tuple(board.state)]))
+                result.win_moves[tuple(board.state)].add(tuple(moves))
+                result.win_circuits[tuple(board.state)] = construct_quantum_circuit(quantum, operations)
             win = True
             break
     return win
@@ -201,4 +201,4 @@ def make_move(quantum, board, your_turn, current_probability, moves, steps, step
 
 
 def get_result(board):
-    return best_wins, win_moves, win_circuits
+    return result
