@@ -45,3 +45,11 @@ class Board():
         self.available = empty
         self.empty = len(empty)
         self.max = max
+
+
+class Result():
+
+    def __init__(self, best_wins, win_moves, win_circuits):
+        self.best_wins = best_wins
+        self.win_moves = win_moves
+        self.win_circuits = win_circuits
