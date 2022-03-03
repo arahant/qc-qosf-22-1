@@ -1,6 +1,6 @@
 import qiskit as qk
 
-LOGGING = True
+LOGGING = False
 
 INITIAL_STATE_PLAYER = [0,1]     # Define initial_state as |1⟩
 INITIAL_STATE_BOT = [1,0]     # Define initial_state as |0⟩
@@ -49,7 +49,8 @@ class Board():
 
 class Result():
 
-    def __init__(self, best_wins, win_moves, win_circuits, player_moves):
+    def __init__(self, best_wins, all_winning_moves, win_circuits, decision_tree):
         self.best_wins = best_wins
-        self.win_moves = win_moves
+        self.all_winning_moves = all_winning_moves
         self.win_circuits = win_circuits
+        self.decision_tree = decision_tree

@@ -388,19 +388,26 @@ Final Qubits 	 Resultant Qubit   Probability 	 Steps 	 Player's best moves
 |001111000⟩ 	 |...11.00.⟩ 	   0.125 	 2 	 [(3, 6, 5, 4)]
 |001011100⟩ 	 |...01.10.⟩ 	   0.125 	 2 	 [(3, 6, 5, 7)]
 
-Best Player's at each board state
-Previous move 	 Previous qubit state 	 Next best move  Next qubit state  Least #steps to win
-4 		 |0011x1x00⟩ 		 5 		 |0011x1100⟩ 	   2
-4 		 |0011x10x0⟩ 		 5 		 |0011110x0⟩ 	   2
+Player's Best possible moves at each turn
+For the latest move (4) with Qubit state (|0011x1x00⟩)
+Next move  Next qubit    Least #steps to win
+5 	   |0011x1100⟩ 	 2
+5 	   |0011110x0⟩ 	 2
 
-5 		 |001x11x00⟩ 		 4 		 |001x11100⟩ 	   2
-5 		 |001011xx0⟩ 		 7 		 |0010111x0⟩ 	   2
-5 		 |001x110x0⟩ 		 4 		 |0011110x0⟩ 	   2
+For the latest move (5) with Qubit state (|001x11x00⟩)
+Next move  Next qubit    Least #steps to win
+4 	   |001x11100⟩ 	 2
+7 	   |0010111x0⟩ 	 2
+4 	   |0011110x0⟩ 	 2
 
-7 		 |001xx1100⟩ 		 5 		 |001x11100⟩ 	   2
-7 		 |0010x11x0⟩ 		 5 		 |0010111x0⟩ 	   2
+For the latest move (7) with Qubit state (|001xx1100⟩)
+Next move  Next qubit    Least #steps to win
+5 	   |001x11100⟩ 	 2
+5 	   |0010111x0⟩ 	 2
 
-6 		 |001xx1xx0⟩ 		 5 		 |001xx11x0⟩ 	   2
+For the latest move (6) with Qubit state (|001xx1xx0⟩)
+Next move  Next qubit    Least #steps to win
+5 	   |001xx11x0⟩ 	 2
 
 
 Resultant Quantum Circuits for:  |001111000⟩
@@ -832,19 +839,26 @@ Final Qubits 	 Resultant Qubit   Probability 	 Steps 	 Player's best moves
 |001111000⟩ 	 |...11.00.⟩ 	   0.125 	 2 	 [(6, 3, 5, 4)]
 |001011100⟩ 	 |...01.10.⟩ 	   0.125 	 2 	 [(6, 3, 5, 7)]
 
-Best Player's at each board state
-Previous move 	 Previous qubit state 	 Next best move  Next qubit state  Least #steps to win
-4 		 |0011x1x00⟩ 		 5 		 |0011x1100⟩ 	   2
-4 		 |0011x10x0⟩ 		 5 		 |0011110x0⟩ 	   2
+Player's Best possible moves at each turn
+For the latest move (4) with Qubit state (|0011x1x00⟩)
+Next move  Next qubit    Least #steps to win
+5 	   |0011x1100⟩ 	 2
+5 	   |0011110x0⟩ 	 2
 
-5 		 |001x11x00⟩ 		 4 		 |001x11100⟩ 	   2
-5 		 |001011xx0⟩ 		 7 		 |0010111x0⟩ 	   2
-5 		 |001x110x0⟩ 		 4 		 |0011110x0⟩ 	   2
+For the latest move (5) with Qubit state (|001x11x00⟩)
+Next move  Next qubit    Least #steps to win
+4 	   |001x11100⟩ 	 2
+7 	   |0010111x0⟩ 	 2
+4 	   |0011110x0⟩ 	 2
 
-7 		 |001xx1100⟩ 		 5 		 |001x11100⟩ 	   2
-7 		 |0010x11x0⟩ 		 5 		 |0010111x0⟩ 	   2
+For the latest move (7) with Qubit state (|001xx1100⟩)
+Next move  Next qubit    Least #steps to win
+5 	   |001x11100⟩ 	 2
+5 	   |0010111x0⟩ 	 2
 
-3 		 |001xx1xx0⟩ 		 5 		 |001xx11x0⟩ 	   2
+For the latest move (3) with Qubit state (|001xx1xx0⟩)
+Next move  Next qubit    Least #steps to win
+5 	   |001xx11x0⟩ 	 2
 
 
 Resultant Quantum Circuits for:  |001111000⟩
