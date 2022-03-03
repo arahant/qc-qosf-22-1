@@ -60,11 +60,12 @@ def analyze_result(result, initial_state, empty, size):
                 result_qubit = get_resulting_qubit(final_qubit, empty, set(state)-initial_state)
                 print('|'+final_qubit+'⟩', '\t', '|'+result_qubit+'⟩', '\t  ', probability, '\t', steps, '\t', list(result.all_winning_moves[state]))
 
-    print("\nBest Player's at each board state")
-    print("Previous move", '\t', 'Previous qubit state', '\t' " Next best move", '', 'Next qubit state', '', "Least #steps to win")
+    print("\nPlayer's Best possible moves at each turn")
     for previous in list(result.decision_tree.keys()):
+        print("For the latest move (%d) with Qubit state (%s)" % (previous, '|'+result.decision_tree[previous][0][0]+'⟩'))
+        print("Next move", '', 'Next qubit', '  ', "Least #steps to win")
         for each_move in result.decision_tree[previous]:
-            print(previous, '\t\t', '|'+each_move[0]+'⟩', '\t\t', each_move[1], '\t\t', '|'+each_move[2]+'⟩', '\t  ', each_move[3])
+            print(each_move[1], '\t  ', '|'+each_move[2]+'⟩', '\t', each_move[3])
         print()
     #     print("\nFor previous step {%d}: " % previous)
     #     print(' ', "Next Move", "least #steps to win")
