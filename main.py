@@ -55,20 +55,20 @@ def analyze_result(result, initial_state, empty, size):
     print("\nFinal Qubits", "\t Resultant Qubit", "  Probability", "\t Steps", "\t Player's best moves")
     for probability in sorted(result.best_wins.keys(), reverse=True):
         for steps, state in result.best_wins[probability]:
-            if len(result.win_moves[state]) > 0:
+            if len(result.all_winning_moves[state]) > 0:
                 final_qubit = algorithm.get_qubit(state, total_set-set(state), size)
                 result_qubit = get_resulting_qubit(final_qubit, empty, set(state)-initial_state)
-                print('|'+final_qubit+'⟩', '\t', '|'+result_qubit+'⟩', '\t  ', probability, '\t', steps, '\t', list(result.win_moves[state]))
+                print('|'+final_qubit+'⟩', '\t', '|'+result_qubit+'⟩', '\t  ', probability, '\t', steps, '\t', list(result.all_winning_moves[state]))
 
     print("\nBest Player's at each board state")
     print("Previous move", '\t', 'Previous qubit state', '\t' " Next best move", '', 'Next qubit state', '', "Least #steps to win")
-    for previous in list(result.player_moves.keys()):
-        for each_move in result.player_moves[previous]:
+    for previous in list(result.decision_tree.keys()):
+        for each_move in result.decision_tree[previous]:
             print(previous, '\t\t', '|'+each_move[0]+'⟩', '\t\t', each_move[1], '\t\t', '|'+each_move[2]+'⟩', '\t  ', each_move[3])
         print()
     #     print("\nFor previous step {%d}: " % previous)
     #     print(' ', "Next Move", "least #steps to win")
-    #     moves = sorted(list(result.player_moves[previous]), key=lambda tup: tup[0])
+    #     moves = sorted(list(result.decision_tree[previous]), key=lambda tup: tup[0])
     #     for step, move in moves:
     #         print(' ', move, '\t ', step)
 
@@ -96,7 +96,7 @@ def start():
             algorithm.initialize()
             algorithm.make_move(quantum, board, your_turn, 1, initial_sequence, 0, 0, [])
             result = algorithm.get_result(board)
-            algorithm.validate_moves(result, initial_sequence)
+            algorithm.prune_invalid_moves(result, initial_sequence)
             analyze_result(result, initial_state, empty, size)
 
 

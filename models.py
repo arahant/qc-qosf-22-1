@@ -53,4 +53,3 @@ class Result():
         self.best_wins = best_wins
         self.win_moves = win_moves
         self.win_circuits = win_circuits
-        self.player_moves = player_moves

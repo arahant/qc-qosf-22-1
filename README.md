@@ -90,8 +90,10 @@ Now, we can also perform circuit optimization on this, without affecting the end
     1. We only have to apply the operators to the moves with the best probability, instead of at every stage.
 1. The result stores the following data:
     1. **best_wins** = this stores the win states with the best probabilities
-    1. **win_moves** = this stores the player's moves for *those* win states
+    1. **all_winning_moves** = this stores the player's moves for *those* win states
     1. **win_circuits** = this generates the final circuit for those win states and moves required to get there.
+    1. **decision_tree** = the decision tree, is a weighted graph, where the child is the next move, with certain probabilities
+1. Once the algorithm completes, I **prune** the invalid moves, and their corresponding circuits, using the decision tree.
 1. The log prints out the possible win states, their individual probability, and the quantum circuit to reach that state
 1. I've implemented the **brute force algorithm**, which generates the entire decision tree for a given state.
 1. This program works for _any_ given state, which includes the example state 1, bonus state, and others.
