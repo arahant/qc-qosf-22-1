@@ -1,9 +1,9 @@
 
 Given Inputs:
- Initial qubit state: |1001..0..⟩
- Player's initial positions: {1, 4}
- Bot's initial positions: {2, 3, 7}
- Empty cells at:  {8, 9, 5, 6}
+  Initial qubit state: |1001..0..⟩
+  Player's initial positions: {1, 4}
+  Bot's initial positions: {2, 3, 7}
+  Empty cells at:  {8, 9, 5, 6}
 
  Player's move now...
  Player's moves so far:  [1, 4]
@@ -384,6 +384,511 @@ Given Inputs:
  The best move is (5), which has a best win probability of (0.2500)
  #######################################################
 
-Final Qubits 	 Resultant Qubit   Probability 	 Steps 	 Player's moves
-|100111000⟩ 	 |....11.00⟩ 	   0.125 	 2 	 [(1, 4, 6, 5), (1, 4, 5, 6)]
-|100110001⟩ 	 |....10.01⟩ 	   0.125 	 2 	 [(1, 4, 9, 5), (1, 4, 5, 9)]
+Final Qubits 	 Resultant Qubit   Probability 	 Steps 	 Player's best moves
+|100111000⟩ 	 |....11.00⟩ 	   0.125 	 2 	 [(1, 4, 5, 6)]
+|100110001⟩ 	 |....10.01⟩ 	   0.125 	 2 	 [(1, 4, 5, 9)]
+
+Best Player's at each board state
+Previous move 	 Previous qubit state 	 Next best move  Next qubit state  Least #steps to win
+9 		 |1001xx001⟩ 		 5 		 |1001x1001⟩ 	   2
+9 		 |1001x00x1⟩ 		 5 		 |1001100x1⟩ 	   2
+
+5 		 |10011x00x⟩ 		 9 		 |10011100x⟩ 	   2
+5 		 |10011x0x0⟩ 		 6 		 |1001110x0⟩ 	   2
+5 		 |1001100xx⟩ 		 9 		 |1001100x1⟩ 	   2
+
+6 		 |1001x100x⟩ 		 5 		 |10011100x⟩ 	   2
+6 		 |1001x10x0⟩ 		 5 		 |1001110x0⟩ 	   2
+
+4 		 |1001xx0xx⟩ 		 5 		 |1001x10xx⟩ 	   2
+
+
+Resultant Quantum Circuits for:  |100110001⟩
+      ┌─────────────────┐          
+q0_0: ┤ Initialize(0,1) ├──────────
+      ├─────────────────┤          
+q0_1: ┤ Initialize(1,0) ├──────────
+      ├─────────────────┤          
+q0_2: ┤ Initialize(1,0) ├──────────
+      ├─────────────────┤          
+q0_3: ┤ Initialize(0,1) ├──■───────
+      ├─────────────────┤┌─┴─┐     
+q0_4: ┤ Initialize(1,0) ├┤ X ├──■──
+      ├─────────────────┤└───┘  │  
+q0_5: ┤ Initialize(1,0) ├───────┼──
+      ├─────────────────┤       │  
+q0_6: ┤ Initialize(1,0) ├───────┼──
+      ├─────────────────┤       │  
+q0_7: ┤ Initialize(1,0) ├───────┼──
+      ├─────────────────┤     ┌─┴─┐
+q0_8: ┤ Initialize(1,0) ├─────┤ X ├
+      └─────────────────┘     └───┘
+c0: 9/═════════════════════════════
+                                   
+
+Resultant Quantum Circuits for:  |100111000⟩
+      ┌─────────────────┐          
+q0_0: ┤ Initialize(0,1) ├──────────
+      ├─────────────────┤          
+q0_1: ┤ Initialize(1,0) ├──────────
+      ├─────────────────┤          
+q0_2: ┤ Initialize(1,0) ├──────────
+      ├─────────────────┤          
+q0_3: ┤ Initialize(0,1) ├──■───────
+      ├─────────────────┤┌─┴─┐     
+q0_4: ┤ Initialize(1,0) ├┤ X ├──■──
+      ├─────────────────┤└───┘┌─┴─┐
+q0_5: ┤ Initialize(1,0) ├─────┤ X ├
+      ├─────────────────┤     └───┘
+q0_6: ┤ Initialize(1,0) ├──────────
+      ├─────────────────┤          
+q0_7: ┤ Initialize(1,0) ├──────────
+      ├─────────────────┤          
+q0_8: ┤ Initialize(1,0) ├──────────
+      └─────────────────┘          
+c0: 9/═════════════════════════════
+                                   
+
+ Player's move now...
+ Player's moves so far:  [4, 1]
+ (4) total possible next states, each with probability (0.2500)
+
+ ################## NEW PLAYER BRANCH ##################
+ Player's next move at (8) with probability: (0.2500)
+ New qubit state:  |1001xx01x⟩
+ Empty cells at:  {9, 5, 6}
+
+	 Bot's move now...
+
+	 ------------------ NEW BOT BRANCH ------------------
+	 Bot's next move at (9)
+	 New qubit state:  |1001xx010⟩
+	 Empty cells at:  {5, 6}
+
+		 Player's move now...
+		 Player's moves so far:  [4, 1, 8]
+		 (2) total possible next states, each with probability (0.5000)
+
+		 ################## NEW PLAYER BRANCH ##################
+		 Player's next move at (5) with probability: (0.1250)
+		 New qubit state:  |10011x010⟩
+		 Empty cells at:  {6}
+
+		 Total win probability for move (5) at step (2) = (0.0000)
+
+		 ################## NEW PLAYER BRANCH ##################
+		 Player's next move at (6) with probability: (0.1250)
+		 New qubit state:  |1001x1010⟩
+		 Empty cells at:  {5}
+
+		 Total win probability for move (6) at step (2) = (0.0000)
+
+		 No wins for the player here
+		 #######################################################
+	 0
+
+	 ------------------ NEW BOT BRANCH ------------------
+	 Bot's next move at (5)
+	 New qubit state:  |10010x01x⟩
+	 Empty cells at:  {9, 6}
+
+		 Player's move now...
+		 Player's moves so far:  [4, 1, 8]
+		 (2) total possible next states, each with probability (0.5000)
+
+		 ################## NEW PLAYER BRANCH ##################
+		 Player's next move at (9) with probability: (0.1250)
+		 New qubit state:  |10010x011⟩
+		 Empty cells at:  {6}
+
+		 Total win probability for move (9) at step (2) = (0.0000)
+
+		 ################## NEW PLAYER BRANCH ##################
+		 Player's next move at (6) with probability: (0.1250)
+		 New qubit state:  |10010101x⟩
+		 Empty cells at:  {9}
+
+		 Total win probability for move (6) at step (2) = (0.0000)
+
+		 No wins for the player here
+		 #######################################################
+	 0
+
+	 ------------------ NEW BOT BRANCH ------------------
+	 Bot's next move at (6)
+	 New qubit state:  |1001x001x⟩
+	 Empty cells at:  {9, 5}
+
+		 Player's move now...
+		 Player's moves so far:  [4, 1, 8]
+		 (2) total possible next states, each with probability (0.5000)
+
+		 ################## NEW PLAYER BRANCH ##################
+		 Player's next move at (9) with probability: (0.1250)
+		 New qubit state:  |1001x0011⟩
+		 Empty cells at:  {5}
+
+		 Total win probability for move (9) at step (2) = (0.0000)
+
+		 ################## NEW PLAYER BRANCH ##################
+		 Player's next move at (5) with probability: (0.1250)
+		 New qubit state:  |10011001x⟩
+		 Empty cells at:  {9}
+
+		 Total win probability for move (5) at step (2) = (0.0000)
+
+		 No wins for the player here
+		 #######################################################
+	 0
+ 0
+
+ Total win probability for move (8) at step (1) = (0.0000)
+
+ ################## NEW PLAYER BRANCH ##################
+ Player's next move at (9) with probability: (0.2500)
+ New qubit state:  |1001xx0x1⟩
+ Empty cells at:  {8, 5, 6}
+
+	 Bot's move now...
+
+	 ------------------ NEW BOT BRANCH ------------------
+	 Bot's next move at (8)
+	 New qubit state:  |1001xx001⟩
+	 Empty cells at:  {5, 6}
+
+		 Player's move now...
+		 Player's moves so far:  [4, 1, 9]
+		 (2) total possible next states, each with probability (0.5000)
+
+		 ################## NEW PLAYER BRANCH ##################
+		 Player's next move at (5) with probability: (0.1250)
+		 New qubit state:  |10011x001⟩
+		 Empty cells at:  {6}
+		 Congrats! This is a WIN!
+
+		 Total win probability for move (5) at step (2) = (0.1250)
+
+		 ################## NEW PLAYER BRANCH ##################
+		 Player's next move at (6) with probability: (0.1250)
+		 New qubit state:  |1001x1001⟩
+		 Empty cells at:  {5}
+
+		 Total win probability for move (6) at step (2) = (0.0000)
+
+		 The best move is (5), which has a best win probability of (0.1250)
+		 #######################################################
+	 0.125
+
+	 ------------------ NEW BOT BRANCH ------------------
+	 Bot's next move at (5)
+	 New qubit state:  |10010x0x1⟩
+	 Empty cells at:  {8, 6}
+
+		 Player's move now...
+		 Player's moves so far:  [4, 1, 9]
+		 (2) total possible next states, each with probability (0.5000)
+
+		 ################## NEW PLAYER BRANCH ##################
+		 Player's next move at (8) with probability: (0.1250)
+		 New qubit state:  |10010x011⟩
+		 Empty cells at:  {6}
+
+		 Total win probability for move (8) at step (2) = (0.0000)
+
+		 ################## NEW PLAYER BRANCH ##################
+		 Player's next move at (6) with probability: (0.1250)
+		 New qubit state:  |1001010x1⟩
+		 Empty cells at:  {8}
+
+		 Total win probability for move (6) at step (2) = (0.0000)
+
+		 No wins for the player here
+		 #######################################################
+	 0
+
+	 ------------------ NEW BOT BRANCH ------------------
+	 Bot's next move at (6)
+	 New qubit state:  |1001x00x1⟩
+	 Empty cells at:  {8, 5}
+
+		 Player's move now...
+		 Player's moves so far:  [4, 1, 9]
+		 (2) total possible next states, each with probability (0.5000)
+
+		 ################## NEW PLAYER BRANCH ##################
+		 Player's next move at (8) with probability: (0.1250)
+		 New qubit state:  |1001x0011⟩
+		 Empty cells at:  {5}
+
+		 Total win probability for move (8) at step (2) = (0.0000)
+
+		 ################## NEW PLAYER BRANCH ##################
+		 Player's next move at (5) with probability: (0.1250)
+		 New qubit state:  |1001100x1⟩
+		 Empty cells at:  {8}
+		 Congrats! This is a WIN!
+
+		 Total win probability for move (5) at step (2) = (0.1250)
+
+		 The best move is (5), which has a best win probability of (0.1250)
+		 #######################################################
+	 0.125
+ 0.125
+
+ Total win probability for move (9) at step (1) = (0.1250)
+
+ ################## NEW PLAYER BRANCH ##################
+ Player's next move at (5) with probability: (0.2500)
+ New qubit state:  |10011x0xx⟩
+ Empty cells at:  {8, 9, 6}
+
+	 Bot's move now...
+
+	 ------------------ NEW BOT BRANCH ------------------
+	 Bot's next move at (8)
+	 New qubit state:  |10011x00x⟩
+	 Empty cells at:  {9, 6}
+
+		 Player's move now...
+		 Player's moves so far:  [4, 1, 5]
+		 (2) total possible next states, each with probability (0.5000)
+
+		 ################## NEW PLAYER BRANCH ##################
+		 Player's next move at (9) with probability: (0.1250)
+		 New qubit state:  |10011x001⟩
+		 Empty cells at:  {6}
+		 Congrats! This is a WIN!
+
+		 Total win probability for move (9) at step (2) = (0.1250)
+
+		 ################## NEW PLAYER BRANCH ##################
+		 Player's next move at (6) with probability: (0.1250)
+		 New qubit state:  |10011100x⟩
+		 Empty cells at:  {9}
+		 Congrats! This is a WIN!
+
+		 Total win probability for move (6) at step (2) = (0.1250)
+
+		 The best move is (9), which has a best win probability of (0.1250)
+		 #######################################################
+	 0.25
+
+	 ------------------ NEW BOT BRANCH ------------------
+	 Bot's next move at (9)
+	 New qubit state:  |10011x0x0⟩
+	 Empty cells at:  {8, 6}
+
+		 Player's move now...
+		 Player's moves so far:  [4, 1, 5]
+		 (2) total possible next states, each with probability (0.5000)
+
+		 ################## NEW PLAYER BRANCH ##################
+		 Player's next move at (8) with probability: (0.1250)
+		 New qubit state:  |10011x010⟩
+		 Empty cells at:  {6}
+
+		 Total win probability for move (8) at step (2) = (0.0000)
+
+		 ################## NEW PLAYER BRANCH ##################
+		 Player's next move at (6) with probability: (0.1250)
+		 New qubit state:  |1001110x0⟩
+		 Empty cells at:  {8}
+		 Congrats! This is a WIN!
+
+		 Total win probability for move (6) at step (2) = (0.1250)
+
+		 The best move is (6), which has a best win probability of (0.1250)
+		 #######################################################
+	 0.125
+
+	 ------------------ NEW BOT BRANCH ------------------
+	 Bot's next move at (6)
+	 New qubit state:  |1001100xx⟩
+	 Empty cells at:  {8, 9}
+
+		 Player's move now...
+		 Player's moves so far:  [4, 1, 5]
+		 (2) total possible next states, each with probability (0.5000)
+
+		 ################## NEW PLAYER BRANCH ##################
+		 Player's next move at (8) with probability: (0.1250)
+		 New qubit state:  |10011001x⟩
+		 Empty cells at:  {9}
+
+		 Total win probability for move (8) at step (2) = (0.0000)
+
+		 ################## NEW PLAYER BRANCH ##################
+		 Player's next move at (9) with probability: (0.1250)
+		 New qubit state:  |1001100x1⟩
+		 Empty cells at:  {8}
+		 Congrats! This is a WIN!
+
+		 Total win probability for move (9) at step (2) = (0.1250)
+
+		 The best move is (9), which has a best win probability of (0.1250)
+		 #######################################################
+	 0.125
+ 0.25
+
+ Total win probability for move (5) at step (1) = (0.2500)
+
+ ################## NEW PLAYER BRANCH ##################
+ Player's next move at (6) with probability: (0.2500)
+ New qubit state:  |1001x10xx⟩
+ Empty cells at:  {8, 9, 5}
+
+	 Bot's move now...
+
+	 ------------------ NEW BOT BRANCH ------------------
+	 Bot's next move at (8)
+	 New qubit state:  |1001x100x⟩
+	 Empty cells at:  {9, 5}
+
+		 Player's move now...
+		 Player's moves so far:  [4, 1, 6]
+		 (2) total possible next states, each with probability (0.5000)
+
+		 ################## NEW PLAYER BRANCH ##################
+		 Player's next move at (9) with probability: (0.1250)
+		 New qubit state:  |1001x1001⟩
+		 Empty cells at:  {5}
+
+		 Total win probability for move (9) at step (2) = (0.0000)
+
+		 ################## NEW PLAYER BRANCH ##################
+		 Player's next move at (5) with probability: (0.1250)
+		 New qubit state:  |10011100x⟩
+		 Empty cells at:  {9}
+		 Congrats! This is a WIN!
+
+		 Total win probability for move (5) at step (2) = (0.1250)
+
+		 The best move is (5), which has a best win probability of (0.1250)
+		 #######################################################
+	 0.125
+
+	 ------------------ NEW BOT BRANCH ------------------
+	 Bot's next move at (9)
+	 New qubit state:  |1001x10x0⟩
+	 Empty cells at:  {8, 5}
+
+		 Player's move now...
+		 Player's moves so far:  [4, 1, 6]
+		 (2) total possible next states, each with probability (0.5000)
+
+		 ################## NEW PLAYER BRANCH ##################
+		 Player's next move at (8) with probability: (0.1250)
+		 New qubit state:  |1001x1010⟩
+		 Empty cells at:  {5}
+
+		 Total win probability for move (8) at step (2) = (0.0000)
+
+		 ################## NEW PLAYER BRANCH ##################
+		 Player's next move at (5) with probability: (0.1250)
+		 New qubit state:  |1001110x0⟩
+		 Empty cells at:  {8}
+		 Congrats! This is a WIN!
+
+		 Total win probability for move (5) at step (2) = (0.1250)
+
+		 The best move is (5), which has a best win probability of (0.1250)
+		 #######################################################
+	 0.125
+
+	 ------------------ NEW BOT BRANCH ------------------
+	 Bot's next move at (5)
+	 New qubit state:  |1001010xx⟩
+	 Empty cells at:  {8, 9}
+
+		 Player's move now...
+		 Player's moves so far:  [4, 1, 6]
+		 (2) total possible next states, each with probability (0.5000)
+
+		 ################## NEW PLAYER BRANCH ##################
+		 Player's next move at (8) with probability: (0.1250)
+		 New qubit state:  |10010101x⟩
+		 Empty cells at:  {9}
+
+		 Total win probability for move (8) at step (2) = (0.0000)
+
+		 ################## NEW PLAYER BRANCH ##################
+		 Player's next move at (9) with probability: (0.1250)
+		 New qubit state:  |1001010x1⟩
+		 Empty cells at:  {8}
+
+		 Total win probability for move (9) at step (2) = (0.0000)
+
+		 No wins for the player here
+		 #######################################################
+	 0
+ 0.125
+
+ Total win probability for move (6) at step (1) = (0.1250)
+
+ The best move is (5), which has a best win probability of (0.2500)
+ #######################################################
+
+Final Qubits 	 Resultant Qubit   Probability 	 Steps 	 Player's best moves
+|100111000⟩ 	 |....11.00⟩ 	   0.125 	 2 	 [(4, 1, 5, 6)]
+|100110001⟩ 	 |....10.01⟩ 	   0.125 	 2 	 [(4, 1, 5, 9)]
+
+Best Player's at each board state
+Previous move 	 Previous qubit state 	 Next best move  Next qubit state  Least #steps to win
+9 		 |1001xx001⟩ 		 5 		 |1001x1001⟩ 	   2
+9 		 |1001x00x1⟩ 		 5 		 |1001100x1⟩ 	   2
+
+5 		 |10011x00x⟩ 		 9 		 |10011100x⟩ 	   2
+5 		 |10011x0x0⟩ 		 6 		 |1001110x0⟩ 	   2
+5 		 |1001100xx⟩ 		 9 		 |1001100x1⟩ 	   2
+
+6 		 |1001x100x⟩ 		 5 		 |10011100x⟩ 	   2
+6 		 |1001x10x0⟩ 		 5 		 |1001110x0⟩ 	   2
+
+1 		 |1001xx0xx⟩ 		 5 		 |1001x10xx⟩ 	   2
+
+
+Resultant Quantum Circuits for:  |100110001⟩
+      ┌─────────────────┐          
+q0_0: ┤ Initialize(0,1) ├──■───────
+      ├─────────────────┤  │       
+q0_1: ┤ Initialize(1,0) ├──┼───────
+      ├─────────────────┤  │       
+q0_2: ┤ Initialize(1,0) ├──┼───────
+      ├─────────────────┤  │       
+q0_3: ┤ Initialize(0,1) ├──┼───────
+      ├─────────────────┤┌─┴─┐     
+q0_4: ┤ Initialize(1,0) ├┤ X ├──■──
+      ├─────────────────┤└───┘  │  
+q0_5: ┤ Initialize(1,0) ├───────┼──
+      ├─────────────────┤       │  
+q0_6: ┤ Initialize(1,0) ├───────┼──
+      ├─────────────────┤       │  
+q0_7: ┤ Initialize(1,0) ├───────┼──
+      ├─────────────────┤     ┌─┴─┐
+q0_8: ┤ Initialize(1,0) ├─────┤ X ├
+      └─────────────────┘     └───┘
+c0: 9/═════════════════════════════
+                                   
+
+Resultant Quantum Circuits for:  |100111000⟩
+      ┌─────────────────┐          
+q0_0: ┤ Initialize(0,1) ├──■───────
+      ├─────────────────┤  │       
+q0_1: ┤ Initialize(1,0) ├──┼───────
+      ├─────────────────┤  │       
+q0_2: ┤ Initialize(1,0) ├──┼───────
+      ├─────────────────┤  │       
+q0_3: ┤ Initialize(0,1) ├──┼───────
+      ├─────────────────┤┌─┴─┐     
+q0_4: ┤ Initialize(1,0) ├┤ X ├──■──
+      ├─────────────────┤└───┘┌─┴─┐
+q0_5: ┤ Initialize(1,0) ├─────┤ X ├
+      ├─────────────────┤     └───┘
+q0_6: ┤ Initialize(1,0) ├──────────
+      ├─────────────────┤          
+q0_7: ┤ Initialize(1,0) ├──────────
+      ├─────────────────┤          
+q0_8: ┤ Initialize(1,0) ├──────────
+      └─────────────────┘          
+c0: 9/═════════════════════════════
+                                   

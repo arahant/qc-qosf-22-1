@@ -1,4 +1,5 @@
 import sys
+from itertools import permutations
 import algorithm
 from models import Board, Quantum
 
@@ -7,7 +8,6 @@ def parse_initial_state(given_state):
     state = set()
     bot = set()
     size = 0
-    # TODO: replace this with actual qubits
     for i, s in enumerate(given_state):
         size += 1
         if s == '1':
@@ -21,10 +21,10 @@ def parse_initial_state(given_state):
 
 def initial_log(initial_state, bot, empty):
     print("\nGiven Inputs:")
-    print(" Initial qubit state:", '|'+sys.argv[1].replace('x', '.')+'⟩')
-    print(" Player's initial positions:", initial_state)
-    print(" Bot's initial positions:", bot)
-    print(" Empty cells at: ", empty)
+    print("  Initial qubit state:", '|'+sys.argv[1].replace('x', '.')+'⟩')
+    print("  Player's initial positions:", initial_state)
+    print("  Bot's initial positions:", bot)
+    print("  Empty cells at: ", empty)
 
 
 def validate_board(initial_state, bot):
@@ -52,32 +52,52 @@ def get_resulting_qubit(qubit, empty, state):
 
 def analyze_result(result, initial_state, empty, size):
     total_set = set(range(size+1))
-    print("\nFinal Qubits", "\t Resultant Qubit", "  Probability", "\t Steps", "\t Player's moves")
+    print("\nFinal Qubits", "\t Resultant Qubit", "  Probability", "\t Steps", "\t Player's best moves")
     for probability in sorted(result.best_wins.keys(), reverse=True):
         for steps, state in result.best_wins[probability]:
-            final_qubit = algorithm.get_qubit(state, total_set-set(state), size)
-            result_qubit = get_resulting_qubit(final_qubit, empty, set(state)-initial_state)
-            print('|'+final_qubit+'⟩', '\t', '|'+result_qubit+'⟩', '\t  ', probability, '\t', steps, '\t', list(result.win_moves[state]))
+            if len(result.all_winning_moves[state]) > 0:
+                final_qubit = algorithm.get_qubit(state, total_set-set(state), size)
+                result_qubit = get_resulting_qubit(final_qubit, empty, set(state)-initial_state)
+                print('|'+final_qubit+'⟩', '\t', '|'+result_qubit+'⟩', '\t  ', probability, '\t', steps, '\t', list(result.all_winning_moves[state]))
+
+    print("\nBest Player's at each board state")
+    print("Previous move", '\t', 'Previous qubit state', '\t' " Next best move", '', 'Next qubit state', '', "Least #steps to win")
+    for previous in list(result.decision_tree.keys()):
+        for each_move in result.decision_tree[previous]:
+            print(previous, '\t\t', '|'+each_move[0]+'⟩', '\t\t', each_move[1], '\t\t', '|'+each_move[2]+'⟩', '\t  ', each_move[3])
+        print()
+    #     print("\nFor previous step {%d}: " % previous)
+    #     print(' ', "Next Move", "least #steps to win")
+    #     moves = sorted(list(result.decision_tree[previous]), key=lambda tup: tup[0])
+    #     for step, move in moves:
+    #         print(' ', move, '\t ', step)
 
     for state in result.win_circuits.keys():
-        circuit = result.win_circuits[state]
-        qubit = algorithm.get_qubit(state, total_set-set(state), size)
-        print("\nResultant Quantum Circuits for: ", '|'+qubit+'⟩')
-        print(circuit)
+        if len(result.win_circuits[state].values()) > 0:
+            for circuit in result.win_circuits[state].values():
+                # circuit = list(result.win_circuits[state].values())[0]
+                qubit = algorithm.get_qubit(state, total_set-set(state), size)
+                print("\nResultant Quantum Circuits for: ", '|'+qubit+'⟩')
+                print(circuit)
 
 
 def start():
     initial_state, bot, empty, size = parse_initial_state(sys.argv[1])
     max_moves = int(sys.argv[2])
-    board = Board(initial_state, bot, size, empty, max_moves)
     initial_log(initial_state, bot, empty)
 
     if validate_board(initial_state, bot):
+        board = Board(initial_state, bot, size, empty, max_moves)
         your_turn = (board.size - board.empty)%2 != 0
         quantum = Quantum(initial_state, bot, size)
-        algorithm.make_move(quantum, board, your_turn, 1, list(initial_state), 0, 0, [])
-        result = algorithm.get_result(board)
-        analyze_result(result, initial_state, empty, size)
+
+        for initial_seq in permutations(initial_state):
+            initial_sequence = list(initial_seq)
+            algorithm.initialize()
+            algorithm.make_move(quantum, board, your_turn, 1, initial_sequence, 0, 0, [])
+            result = algorithm.get_result(board)
+            algorithm.prune_invalid_moves(result, initial_sequence)
+            analyze_result(result, initial_state, empty, size)
 
 
 if __name__ == '__main__':

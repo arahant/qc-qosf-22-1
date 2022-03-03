@@ -4,9 +4,17 @@ from collections import defaultdict
 from models import LOGGING, Board, Quantum, Result
 
 best_wins = defaultdict(set)
-win_moves = defaultdict(set)
-win_circuits = dict()
-result = Result(best_wins, win_moves, win_circuits)
+all_winning_moves = defaultdict(set)
+win_circuits = defaultdict(dict)
+decision_tree = defaultdict(list)
+
+
+def initialize():
+    best_wins.clear()
+    all_winning_moves.clear()
+    win_circuits.clear()
+    decision_tree.clear()
+
 
 def get_qubit(state, bot, size):
     qubit = ''
@@ -52,7 +60,6 @@ def get_all_possible_states(board, turn):
             next_state = board.state.copy()
         else:
             next_state = board.bot.copy()
-        # TODO: replace this with Quantum gate Algorithm, to set qubit to |1>, when it's player's turn
         next_state.add(pos)
         next_states.append((pos, next_state))
     return next_states, next_probability
@@ -76,9 +83,9 @@ def evaluate_penultimate_state(quantum, board, probability, moves, steps, operat
     for win_pos in win_states():
         if set(win_pos).issubset(board.state):
             if steps <= board.max:
-                result.best_wins[probability].add(tuple([steps, tuple(board.state)]))
-                result.win_moves[tuple(board.state)].add(tuple(moves))
-                result.win_circuits[tuple(board.state)] = construct_quantum_circuit(quantum, operations)
+                best_wins[probability].add(tuple([steps, tuple(board.state)]))
+                all_winning_moves[tuple(board.state)].add(tuple(moves))
+                win_circuits[tuple(board.state)][tuple(moves)] = construct_quantum_circuit(quantum, operations)
             win = True
             break
     return win
@@ -95,9 +102,12 @@ def player_move(quantum, board, current_probability, moves, steps, steps_bot, op
 
     next_states, next_probability = get_all_possible_states(board, 'player')
     new_probability = float(next_probability * current_probability)
-    best_probability = 0
     total_probability = 0
+    best_probability = 0
+    best_steps = board.size
     best_move = 0
+    next_state = board.state
+    next_bot = board.bot
 
     if LOGGING:
         print('\t'*total_steps, "(%d) total possible next states, each with probability (%.4f)" % (len(next_states), next_probability))
@@ -106,8 +116,9 @@ def player_move(quantum, board, current_probability, moves, steps, steps_bot, op
         new_empty_cells = board.available.copy()
         new_empty_cells.remove(pos)
         new_board = Board(next_state, board.bot, board.size, new_empty_cells, board.max)
-        next_move = pos
         local_probability = 0
+        local_steps = board.size
+        next_move = pos
 
         # Setting the next qubit to |1⟩
         gate = tuple(['cx', moves[-1]-1, pos-1])
@@ -121,39 +132,49 @@ def player_move(quantum, board, current_probability, moves, steps, steps_bot, op
 
         if evaluate_penultimate_state(quantum, new_board, new_probability, moves+[next_move], steps+1, operations+[gate]):
             local_probability += new_probability
+            local_steps = steps + 1
             if LOGGING:
                 print('\t'*total_steps, "Congrats! This is a WIN!")
         elif new_board.empty > 1:
-            temp_probability = make_move(quantum, new_board, (new_board.size - new_board.empty)%2 != 0, new_probability, moves+[next_move], steps+1, steps_bot, operations+[gate])
+            temp_probability, temp_steps = make_move(quantum, new_board, (new_board.size - new_board.empty)%2 != 0, new_probability, moves+[next_move], steps+1, steps_bot, operations+[gate])
             if LOGGING:
                 print('\t'*total_steps, temp_probability)
             if temp_probability > 0:
                 local_probability += temp_probability
+                local_steps = temp_steps
         elif evaluate_penultimate_state(quantum, new_board, new_probability, moves+[next_move], steps+1, operations+[gate]):
                 local_probability += new_probability
+                local_steps = steps + 1
                 if LOGGING:
                     print('\t'*total_steps, "Congrats! This is a WIN!")
 
         total_probability += local_probability
         if local_probability > best_probability:
             best_move = next_move
+            best_steps = local_steps
             best_probability = local_probability
+            next_state = new_board.state
+        elif local_probability == best_probability and local_steps < best_steps:
+            best_move = next_move
+            best_steps = local_steps
+            next_state = new_board.state
 
         if LOGGING:
             print()
             print('\t'*total_steps, "Total win probability for move (%d) at step (%d) = (%.4f)" % (next_move, steps+1, local_probability))
 
+    if best_probability > 0:
+        decision_tree[moves[-1]].append((get_qubit(board.state, board.bot, board.size), best_move, get_qubit(next_state, board.bot, board.size), best_steps))
+
     if LOGGING:
         print()
         if best_probability > 0:
-
-            # TODO: replace qubit setting here. Only set a qubit if there is a best win probability
             print('\t'*total_steps, "The best move is (%d), which has a best win probability of (%.4f)" % (best_move, best_probability))
         else:
             print('\t'*total_steps, "No wins for the player here")
         print('\t'*total_steps, "#######################################################")
 
-    return total_probability
+    return total_probability, steps+1
 
 
 def bot_move(quantum, board, current_probability, moves, steps, steps_bot, operations):
@@ -170,6 +191,7 @@ def bot_move(quantum, board, current_probability, moves, steps, steps_bot, opera
 
     next_states, next_probability = get_all_possible_states(board, 'bot')
     best_probability = 0
+    best_steps = board.size
 
     for pos, next_state in next_states:
         new_empty_cells = board.available.copy()
@@ -177,6 +199,7 @@ def bot_move(quantum, board, current_probability, moves, steps, steps_bot, opera
         next_move = pos
         new_board = Board(board.state, next_state, board.size, new_empty_cells, board.max)
         local_probability = 0
+        local_steps = board.size
 
         if LOGGING:
             print()
@@ -186,19 +209,48 @@ def bot_move(quantum, board, current_probability, moves, steps, steps_bot, opera
             print('\t'*total_steps,"Empty cells at: ", new_board.available)
 
         if new_board.empty > 0:
-            temp_probability = make_move(quantum, new_board, (new_board.size - new_board.empty)%2 != 0, current_probability, moves, steps, steps_bot+1, operations)
+            temp_probability, temp_steps = make_move(quantum, new_board, (new_board.size - new_board.empty)%2 != 0, current_probability, moves, steps, steps_bot+1, operations)
             if LOGGING:
                 print('\t'*total_steps, temp_probability)
             local_probability += temp_probability
+            local_steps = temp_steps
 
         best_probability = max(best_probability, local_probability)
+        best_steps = min(best_steps, local_steps)
 
-    return best_probability
+    return best_probability, best_steps
 
 
 def make_move(quantum, board, your_turn, current_probability, moves, steps, steps_bot, operations):
     return player_move(quantum, board, current_probability, moves, steps, steps_bot, operations) if your_turn else bot_move(quantum, board, current_probability, moves, steps, steps_bot, operations)
 
 
+def validate_moves(tree, sequence, initial_sequence):
+    for pos in initial_sequence[:-1]:
+        sequence.remove(pos)
+    for i, el in enumerate(sequence[:-1]):
+        if el not in tree:
+            return False
+        flag = False
+        for next in tree[el]:
+            if sequence[i+1] == next[1]:
+                flag = True
+        if not flag:
+            return False
+    return True
+
+
+def prune_invalid_moves(result, initial_sequence):
+    new_win_moves = copy.deepcopy(result.all_winning_moves)
+    for state, all_moves in result.all_winning_moves.items():
+        for move in all_moves:
+            if not validate_moves(result.decision_tree, list(move), initial_sequence):
+                new_win_moves[state].remove(move)
+                result.win_circuits[state].pop(move)
+        if not new_win_moves[state]:
+            new_win_moves.pop(state)
+    result.all_winning_moves = new_win_moves
+
+
 def get_result(board):
-    return result
+    return Result(best_wins, all_winning_moves, win_circuits, decision_tree)
